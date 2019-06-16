@@ -18,7 +18,7 @@
 #include <freertos/semphr.h>
 #include "freertos/task.h"
 
-#include "../lvgl/lvgl.h"
+#include "lvgl.h"
 
 /*********************
  *      DEFINES

@@ -6,11 +6,13 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "xpt2046.h"
+#include <stddef.h>
+
 #include "esp_system.h"
 #include "driver/gpio.h"
+
 #include "tp_spi.h"
-#include <stddef.h>
+#include "xpt2046.h"
 
 /*********************
  *      DEFINES
