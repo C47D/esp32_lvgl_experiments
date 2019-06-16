@@ -1,10 +1,10 @@
 /**
- * @file tp_spi.h
+ * @file lv_templ.h
  *
  */
 
-#ifndef TP_SPI_H
-#define TP_SPI_H
+#ifndef ILI9341_H
+#define ILI9341_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,17 +13,15 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include <stdint.h>
+#include "../lvgl/lvgl.h"
 
 /*********************
  *      DEFINES
  *********************/
 
-#define TP_SPI_MOSI 32
-#define TP_SPI_MISO 35
-#define TP_SPI_CLK  26
-#define TP_SPI_CS   33
-
+#define ILI9341_DC   2
+#define ILI9341_RST  4
+#define ILI9341_BCKL 21
 
 /**********************
  *      TYPEDEFS
@@ -32,8 +30,10 @@ extern "C" {
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
-void tp_spi_init(void);
-uint8_t tp_spi_xchg(uint8_t data_send);
+
+void ili9341_init(void);
+void ili9341_fill(int32_t x1, int32_t y1, int32_t x2, int32_t y2, lv_color_t color);
+void ili9341_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const lv_color_t * color_map);
 
 /**********************
  *      MACROS
@@ -44,4 +44,4 @@ uint8_t tp_spi_xchg(uint8_t data_send);
 } /* extern "C" */
 #endif
 
-#endif /*TP_SPI_H*/
+#endif /*ILI9341_H*/

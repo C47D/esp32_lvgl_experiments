@@ -1,10 +1,10 @@
 /**
- * @file lv_templ.h
+ * @file disp_spi.h
  *
  */
 
-#ifndef ILI9341_H
-#define ILI9341_H
+#ifndef DISP_SPI_H
+#define DISP_SPI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,15 +13,16 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lvgl/lvgl.h"
+#include <stdint.h>
 
 /*********************
  *      DEFINES
  *********************/
 
-#define ILI9341_DC   19
-#define ILI9341_RST  18
-#define ILI9341_BCKL 23
+#define DISP_SPI_MOSI 13
+#define DISP_SPI_CLK  14
+#define DISP_SPI_CS   15
+
 
 /**********************
  *      TYPEDEFS
@@ -30,10 +31,9 @@ extern "C" {
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
-
-void ili9341_init(void);
-void ili9341_fill(int32_t x1, int32_t y1, int32_t x2, int32_t y2, lv_color_t color);
-void ili9341_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const lv_color_t * color_map);
+void disp_spi_init(void);
+void disp_spi_send_data(uint8_t * data, uint16_t length);
+void disp_spi_send_colors(uint8_t * data, uint16_t length);
 
 /**********************
  *      MACROS
@@ -44,4 +44,4 @@ void ili9341_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const lv_colo
 } /* extern "C" */
 #endif
 
-#endif /*ILI9341_H*/
+#endif /*DISP_SPI_H*/

@@ -58,7 +58,7 @@
  *=================*/
 
 /*Input device settings*/
-#define LV_INDEV_READ_PERIOD            50                     /*Input device read period in milliseconds*/
+#define LV_INDEV_READ_PERIOD            100                     /*Input device read period in milliseconds*/
 #define LV_INDEV_POINT_MARKER           3                      /*Mark the pressed points  (required: USE_LV_REAL_DRAW = 1)*/
 #define LV_INDEV_DRAG_LIMIT             10                     /*Drag threshold in pixels */
 #define LV_INDEV_DRAG_THROW             20                     /*Drag throw slow-down in [%]. Greater value means faster slow-down */
@@ -105,6 +105,7 @@
  * To enable a built-in font use 1,2,4 or 8 values
  * which will determine the bit-per-pixel */
 #define LV_FONT_DEFAULT        &lv_font_dejavu_20     /*Always set a default font from the built-in fonts*/
+// #define LV_FONT_DEFAULT        &monospace_8     /*Always set a default font from the built-in fonts*/
 
 #define USE_LV_FONT_DEJAVU_10              0
 #define USE_LV_FONT_DEJAVU_10_LATIN_SUP    0
@@ -248,6 +249,6 @@
 /*Switch (dependencies: lv_slider)*/
 #define USE_LV_SW       1
 
-#include "lvgl/lv_conf_checker.h"
+#include "components/lvgl/lv_conf_checker.h"
 
 #endif /*LV_CONF_H*/
