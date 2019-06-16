@@ -21,14 +21,14 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-#define XPT2046_IRQ 25
+#define XPT2046_IRQ			25
 
-#define XPT2046_AVG 4
-#define XPT2046_X_MIN       1000
-#define XPT2046_Y_MIN       1000
-#define XPT2046_X_MAX       3200
-#define XPT2046_Y_MAX       2000
-#define XPT2046_X_INV       1
+#define XPT2046_AVG			4
+#define XPT2046_X_MIN       0
+#define XPT2046_Y_MIN       0
+#define XPT2046_X_MAX       4096
+#define XPT2046_Y_MAX       4096
+#define XPT2046_X_INV       0
 #define XPT2046_Y_INV       1
 
 /**********************

@@ -21,6 +21,7 @@
 /**********************
  *      TYPEDEFS
  **********************/
+#define XPT2046_XY_SWAP	1
 
 /**********************
  *  STATIC PROTOTYPES
@@ -31,9 +32,11 @@ static void xpt2046_avg(int16_t * x, int16_t * y);
 /**********************
  *  STATIC VARIABLES
  **********************/
-int16_t avg_buf_x[XPT2046_AVG];
-int16_t avg_buf_y[XPT2046_AVG];
-uint8_t avg_last;
+// XPT2046_AVG esta definido en xpt2046.h y vale 4
+
+int16_t avg_buf_x[XPT2046_AVG] = {0};
+int16_t avg_buf_y[XPT2046_AVG] = {0};
+uint8_t avg_last = 0;
 
 /**********************
  *      MACROS
@@ -51,7 +54,6 @@ void xpt2046_init(void)
     gpio_set_direction(XPT2046_IRQ, GPIO_MODE_INPUT);
     gpio_set_direction(TP_SPI_CS, GPIO_MODE_OUTPUT);
     gpio_set_level(TP_SPI_CS, 1);
-
 }
 
 /**
@@ -64,7 +66,7 @@ bool xpt2046_read(lv_indev_data_t * data)
     static int16_t last_x = 0;
     static int16_t last_y = 0;
     bool valid = true;
-    uint8_t buf;
+    uint8_t buf = 0;
 
     int16_t x = 0;
     int16_t y = 0;
@@ -90,11 +92,15 @@ bool xpt2046_read(lv_indev_data_t * data)
         /*Normalize Data*/
         x = x >> 3;
         y = y >> 3;
+
         xpt2046_corr(&x, &y);
         xpt2046_avg(&x, &y);
         last_x = x;
         last_y = y;
 
+#if 0
+		printf("IRQ after: pos x: %i, pos y: %i\r\n", x, y);
+#endif
 
     } else {
         x = last_x;
@@ -105,6 +111,7 @@ bool xpt2046_read(lv_indev_data_t * data)
 
     data->point.x = x;
     data->point.y = y;
+
     data->state = valid == false ? LV_INDEV_STATE_REL : LV_INDEV_STATE_PR;
 
     return valid;
@@ -116,7 +123,7 @@ bool xpt2046_read(lv_indev_data_t * data)
 static void xpt2046_corr(int16_t * x, int16_t * y)
 {
 #if XPT2046_XY_SWAP != 0
-    int16_t swap_tmp;
+    int16_t swap_tmp = 0;
     swap_tmp = *x;
     *x = *y;
     *y = swap_tmp;
@@ -141,15 +148,13 @@ static void xpt2046_corr(int16_t * x, int16_t * y)
 #if XPT2046_Y_INV != 0
     (*y) =  LV_VER_RES - (*y);
 #endif
-
-
 }
-
 
 static void xpt2046_avg(int16_t * x, int16_t * y)
 {
     /*Shift out the oldest data*/
-    uint8_t i;
+    uint8_t i = 0;
+
     for(i = XPT2046_AVG - 1; i > 0 ; i--) {
         avg_buf_x[i] = avg_buf_x[i - 1];
         avg_buf_y[i] = avg_buf_y[i - 1];
@@ -172,3 +177,4 @@ static void xpt2046_avg(int16_t * x, int16_t * y)
     (*x) = (int32_t)x_sum / avg_last;
     (*y) = (int32_t)y_sum / avg_last;
 }
+

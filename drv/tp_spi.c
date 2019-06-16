@@ -6,11 +6,13 @@
 /*********************
  *      INCLUDES
  *********************/
+#include <string.h>
+
 #include "tp_spi.h"
+
 #include "esp_system.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
-#include <string.h>
 
 /*********************
  *      DEFINES
@@ -39,48 +41,48 @@ static spi_device_handle_t spi;
  **********************/
 void tp_spi_init(void)
 {
+	esp_err_t ret = ESP_FAIL;
 
-	esp_err_t ret;
-
-	spi_bus_config_t buscfg={
-		.miso_io_num=TP_SPI_MISO,
-		.mosi_io_num=TP_SPI_MOSI,
-		.sclk_io_num=TP_SPI_CLK,
-		.quadwp_io_num=-1,
-		.quadhd_io_num=-1
+	spi_bus_config_t buscfg = {
+		.miso_io_num = TP_SPI_MISO,
+		.mosi_io_num = TP_SPI_MOSI,
+		.sclk_io_num = TP_SPI_CLK,
+		.quadwp_io_num = -1,
+		.quadhd_io_num = -1
 	};
 
-	spi_device_interface_config_t devcfg={
-		.clock_speed_hz=10*1000*1000,           //Clock out at 80 MHz
-		.mode=0,                                //SPI mode 0
-		.spics_io_num=-1,              //CS pin
-		.queue_size=1,
-		.pre_cb=NULL,
-		.post_cb=NULL,
+	spi_device_interface_config_t touch_cfg = {
+		.clock_speed_hz = 10000000,
+		.mode = 0,
+		.spics_io_num = -1,
+		.queue_size = 1,
+		.pre_cb = NULL,
+		.post_cb = NULL,
 	};
 
 	//Initialize the SPI bus
-	ret=spi_bus_initialize(VSPI_HOST, &buscfg, 2);
-	assert(ret==ESP_OK);
+	ret = spi_bus_initialize(VSPI_HOST, &buscfg, 2);
+	assert(ESP_OK == ret);
 
 	//Attach the LCD to the SPI bus
-	ret=spi_bus_add_device(VSPI_HOST, &devcfg, &spi);
-	assert(ret==ESP_OK);
+	ret = spi_bus_add_device(VSPI_HOST, &touch_cfg, &spi);
+	assert(ESP_OK == ret);
 }
 
 uint8_t tp_spi_xchg(uint8_t data_send)
 {
+	spi_transaction_t *rt = NULL;
+	esp_err_t ret = ESP_FAIL;
     uint8_t data_rec = 0;
-	spi_transaction_t t;
-    memset(&t, 0, sizeof(t));       	//Zero out the transaction
-	t.length = 8;              //Length is in bytes, transaction length is in bits.
-	t.tx_buffer = &data_send;            //Data
+
+	spi_transaction_t t = {0};
+    memset(&t, 0, sizeof(t));
+	
+	t.length = 8; /* in bits */
+	t.tx_buffer = &data_send;
 	t.rx_buffer = &data_rec;
-	esp_err_t ret;
 
 	spi_device_queue_trans(spi, &t, portMAX_DELAY);
-
-	spi_transaction_t * rt;
 	spi_device_get_trans_result(spi, &rt, portMAX_DELAY);
 
 	return data_rec;
